@@ -1,4 +1,5 @@
 
+<%@page import="Utils.EncriptacionMD5"%>
 <%@page import="java.sql.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -44,12 +45,13 @@
                     String user = request.getParameter("nombreUser");
                     String pwd1 = request.getParameter("password");
                     String pwd2 = request.getParameter("password2");
+                    EncriptacionMD5 encMD5 = new EncriptacionMD5();
                     if (pwd1.equals(pwd2)) {
                         try {
                             Class.forName("com.mysql.jdbc.Driver");
                             con = DriverManager.getConnection("jdbc:mysql://localhost/jsp?user=root");
                             st = con.createStatement();
-                            st.executeUpdate("update user set user='" + user + "',password='" + pwd1 + "'where id='" + sesion.getAttribute("id") + "';");
+                            st.executeUpdate("update user set user='" + user + "',password='" + encMD5.getMD5(pwd1) + "'where id='" + sesion.getAttribute("id") + "';");
                             sesion.setAttribute("user", user);
                             response.sendRedirect("index.jsp");
                         } catch (Exception e) {

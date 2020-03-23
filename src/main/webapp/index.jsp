@@ -5,9 +5,9 @@
 --%>
 
 
-<%@page import="java.sql.*"%>
-<%@page import="com.mysql.jdbc.Driver"%>
+
 <%@page contentType="text/html" pageEncoding="ISO-8859-9"%>
+<%@page import="com.mysql.jdbc.Driver"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -23,15 +23,13 @@
             if (sesion.getAttribute("logueado") == null || sesion.getAttribute("logueado").equals(0)) {
                 response.sendRedirect("login.jsp");
             }
-            Connection con = null;
-            Statement st = null;
-            ResultSet rs = null;
+
         %>
         <!--Barra de navegacion-->
         <nav class="navbar navbar-light bg-light">
             <a class="navbar-brand">Pruebas JW</a>
             <form class="form-inline" action="logout.jsp">
-                <a href="datosUsuario.jsp"><i class="fa fa-user" aria-hidden="true" ></i><%=sesion.getAttribute("user") %></a>
+                <a href="datosUsuario.jsp"><i class="fa fa-user" aria-hidden="true" ></i><%=sesion.getAttribute("user")%></a>
                 <button class="btn btn-outline-danger my-2 my-sm-0 ml-5"  type="submit" >Desconectarse</button>
             </form>
         </nav>
@@ -105,62 +103,38 @@
                 </tbody>
             </table>
             <br><br><br>
-            <h1>Tabla sin acceso a base de datos</h1>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col" colspan="4" class="text-center">Empleados</th>
-                        <th scope="col" >
-                            <a href="crearEmpleado.jsp"><i class="fa fa-user-plus" aria-hidden="true"></i></a>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Direccion</th>
-                        <th scope="col">Telefono</th>
-                        <th scope="col">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <%                        
-                        try {
-                            Class.forName("com.mysql.jdbc.Driver");
-                            con = DriverManager.getConnection("jdbc:mysql://localhost/jsp?user=root");
-                            st = con.createStatement();
-                            rs = st.executeQuery("Select * from empleados");
-                            String idEmp = "";
-                            String nombreEmp = "";
-                            String direccionEmp = "";
-                            String telefonoEmp = "";
-                            while (rs.next()) {
-                                idEmp = rs.getString(1);
-                                nombreEmp = rs.getString(2);
-                                direccionEmp = rs.getString(3);
-                                telefonoEmp = rs.getString(4);
-                    %>
-                    <tr>
-                        <th scope="row"><%out.print(idEmp);%></th>
-                        <td><%out.print(nombreEmp);%></td>
-                        <td><%out.print(direccionEmp);%></td>
-                        <td><%out.print(telefonoEmp);%></td>
-                        <td>
-                            <a href="editarEmpleado.jsp?id=<%=idEmp%>&nombre=<%=nombreEmp%>&direccion=<%=direccionEmp%>&telefono=<%=telefonoEmp%>"> 
-                                <i class="fa fa-pencil" aria-hidden="true"></i>
-                            </a>
-                            <a href="borrarEmpleado.jsp?id=<%=idEmp%>" class="ml-1"> 
-                                <i class="fa fa-trash-o" aria-hidden="true"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    <%
-                            }
-                        } catch (Exception e) {
-                            out.print("error mysql " + e);
-                        }
-                    %>
-                </tbody>
-            </table>
+            <h1>Tabla con acceso a base de datos</h1>
+     
+            <form action="index.jsp" method="get">
+            
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center"></th>
+                            <th scope="col" class="text-center">
+                                <input type="text" name="nombre" class="form-control" placeholder="Buscar por nombre"/>
+                            </th>
+                            <th scope="col" class="text-center">
+                                <input type="submit" value="Buscar" name="Enviar" class="form-control btn btn-primary"/>
+                            </th>
+                            <th></th>
+                            <th scope="col" >
+                                <a href="crearEmpleado.jsp"><i class="fa fa-user-plus" aria-hidden="true"></i></a>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Direccion</th>
+                            <th scope="col">Telefono</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <jsp:include page="Empleados"/>
+                    </tbody>
+                </table>
+            </form>        
             <!--imagenes-->   
             <img src="https://images.pexels.com/photos/2184717/pexels-photo-2184717.png?cs=srgb&dl=gato-gato-bicolor-gato-callejero-gato-domestico-2184717.jpg&fm=jpg" class="rounded float-left" height="100" width="100" alt="...">
         </div>

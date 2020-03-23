@@ -4,7 +4,9 @@
     Author     : Usuario
 --%>
 
+<%@page import="java.security.NoSuchAlgorithmException"%>
 <%@page import="java.sql.*"%>
+<%@page import="Utils.EncriptacionMD5" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -37,6 +39,7 @@
                 Connection con = null;
                 Statement st = null;
                 ResultSet rs = null;
+                EncriptacionMD5 encMD5 = new EncriptacionMD5();
                 if (request.getParameter("login") != null) {
                     String user = request.getParameter("user");
                     String pwd = request.getParameter("password");
@@ -46,7 +49,7 @@
                         Class.forName("com.mysql.jdbc.Driver");
                         con = DriverManager.getConnection("jdbc:mysql://localhost/jsp?user=root");
                         st = con.createStatement();
-                        rs = st.executeQuery("Select * from user where user='" + user + "' and password='" + pwd + "';");
+                        rs = st.executeQuery("Select * from user where user='" + user + "' and password='" + encMD5.getMD5(pwd) + "';");
                         while (rs.next()) {
                             sesion.setAttribute("logueado", 1);
                             sesion.setAttribute("user", user);
@@ -63,8 +66,5 @@
                 }
             %>
         </div>
-
-
-
     </body>
 </html>
